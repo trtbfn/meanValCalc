@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <title>Programm</title>
+</head>
+<body>
+        <div class="row">
+            <div class="col offset-s3">
+                <form method="post">
+                    <div class="input-filed col s10">
+                        <label for="elems_count">Количество элементов</label>
+                        <input type="number" id="elems_count">
+                    </div>
+        
+                    <div class="input-filed col s10">
+                        <label for="experiments_count">Количество экспериментов</label>
+                        <input type="number" id="experiments_count">
+                    </div>
+                
+                    <button id="btn" class="btn waves-effect waves-light col s10" type="button">Отправить</button>
+                </form>
+    
+    
+                <div class="col s10" style="margin: 25px">
+                    <label for="mean_probability">Средняя вероятность безотказной работы по всем эксперементам</label>
+                    <p id="mean_probability" ></p>
+                </div>
+                
+            </div>   
+        </div>
+
+<script>
+    const elemensCount = document.getElementById("elems_count"),
+          experimentsCount = document.getElementById("experiments_count"),
+          //DOMelements
+          btn = document.getElementById("btn"),
+          result = document.getElementById("mean_probability");
+
+    function satisfy(inputValue, limit) {
+        if (Number.parseInt(inputValue) < limit) {
+            return true;
+        } else return false;
+    }
+
+
+    btn.addEventListener("click", (e) => {
+        e.preventDefault();
+
+        if(satisfy(elemensCount.value, 256) 
+            && satisfy(experimentsCount.value, 10000)) {
+
+                const data = {
+                elemensCount: elemensCount.value,
+                experimentsCount: experimentsCount.value,
+            };
+            
+            const res = fetch('http://localhost:3000', {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(res => {
+                return res.json();
+            }).then(json => {
+                const data = JSON.parse(json);
+                result.textContent = data;
+            });
+
+        } 
+
+        
+
+    });
+</script>
+</body>
+</html>
