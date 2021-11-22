@@ -4,13 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "bignumber.js": "^9.0.1",
+    "esm": "^3.2.25",
     "express": "^4.17.1",
-    "level": "^7.0.1"
+    "level": "^7.0.1",
+    "lowdb": "^3.0.0",
+    "sqlite": "^4.0.23",
+    "sqlite3": "^5.0.2"
   }
 }
