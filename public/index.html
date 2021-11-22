@@ -32,15 +32,22 @@
                     <p id="mean_probability" ></p>
                 </div>
                 
+                <button id="btn-results" class="btn waves-effect waves-light col s10" type="button" style="margin-top: 25px;">Показать результаты</button>
+
+                    <label for="results" class="col s10" style="margin-top: 25px;">Результаты</label>
+                    <ul id="results" class="col s10 collection"></ul>
             </div>   
         </div>
 
 <script>
     const elemensCount = document.getElementById("elems_count"),
           experimentsCount = document.getElementById("experiments_count"),
+          liResults = [],
           //DOMelements
           btn = document.getElementById("btn"),
-          result = document.getElementById("mean_probability");
+          btnResults = document.getElementById('btn-results'),
+          result = document.getElementById("mean_probability"),
+          ulResults = document.getElementById('results');
 
     function satisfy(inputValue, limit) {
         if (Number.parseInt(inputValue) < limit) {
@@ -48,8 +55,23 @@
         } else return false;
     }
 
+    function createLiResult(text, link) {
+        const a = document.createElement('a');
+        a.textContent = text;
+        a.href = link
+        a.style.color = 'black';
+        const liResult = document.createElement('li');
+        liResult.appendChild(a);
+        liResult.classList.add('collection-item');
+        liResults.push(liResult);
+        ulResults.appendChild(liResult);
+    }
 
+    function deleteLiResult(liResult) {
+        ulResults.removeChild(liResult);
+    }
     btn.addEventListener("click", (e) => {
+
         e.preventDefault();
 
         if(satisfy(elemensCount.value, 256) 
@@ -77,6 +99,21 @@
 
         
 
+    });
+
+    btnResults.addEventListener('click', (e) => {
+        e.preventDefault();
+        const res = fetch('http://localhost:3000/api/results')
+        .then(res => {
+                return res.json();
+            }).then(json => {
+                const data = JSON.parse(json);
+                liResults.forEach(li => deleteLiResult(li));
+                data.forEach((li, i) => createLiResult(
+                    `Результат ${i+1}. Средняя вероятность безотказной работы: ${li.meanProbability}`,
+                    `http://localhost:3000/api/results/${i+1}`
+                ));
+            });
     });
 </script>
 </body>

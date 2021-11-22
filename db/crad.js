@@ -9,7 +9,7 @@ const writeFile = async (filePath, data) => {
   } catch(err) {
     console.error(err.message);
   }
-}
+};
 
 const readFile = async filePath => {
   try{
@@ -18,11 +18,12 @@ const readFile = async filePath => {
   } catch(err) {
     console.error(err.message);
   }
-}
+};
 
 const establishInitialState = async () => {
   const answer = await readFile(path.join(__dirname, 'assets.json'))
-    if(!answer.isInitialized) {
+  const parsedAnswer = JSON.parse(answer);
+    if(!parsedAnswer.isInitilized) {
       try {
         await db.put('savedProbabilities', JSON.stringify([]));
         await writeFile(
@@ -37,7 +38,7 @@ const establishInitialState = async () => {
     }  
 }
 
-const saveProbability = async probabilityObj => {
+const saveProb = async probabilityObj => {
   try {
     const savedProbabilities = await db.get('savedProbabilities');
     const parsedSavedProbabilites = JSON.parse(savedProbabilities);
@@ -46,10 +47,20 @@ const saveProbability = async probabilityObj => {
   } catch(err) {
     console.error(err.message);
   }
-}
+};
+
+const getSavedProbs = async () => {
+  try {
+    const probs = await db.get('savedProbabilities');
+    return JSON.parse(probs);
+  } catch(err) {
+    console.error(err);
+  }
+};
 
 module.exports = {
   establishInitialState,
-  saveProbability
+  saveProb,
+  getSavedProbs
 }
 

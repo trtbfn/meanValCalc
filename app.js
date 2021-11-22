@@ -2,7 +2,8 @@ const express = require('express'),
       BigNumber = require('bignumber.js'),
      {
         establishInitialState,
-        saveProbability
+        saveProb,
+        getSavedProbs
      } = require('./db/crad');
 
 const app = express(),
@@ -62,11 +63,23 @@ app.post('/', (req, res) => {
 
     const meanProbability = counter.toExponential(5);
 
-    saveProbability({
+    saveProb({
         meanProbability, matrix
     });
 
     res.json(JSON.stringify(meanProbability));
+});
+
+app.get('/api/results', (req,res) => {
+    getSavedProbs().then(probs => {
+        res.json(JSON.stringify(probs.filter(prob => prob.meanProbability)));
+    });
+})
+
+app.get('/api/results/:id', (req,res) => {
+    getSavedProbs().then(probs => {
+        res.json(JSON.stringify(probs[req.params.id - 1].matrix));
+    });
 });
 
 startProj();
