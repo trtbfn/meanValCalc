@@ -4,7 +4,8 @@ const express = require('express'),
         establishInitialState,
         saveProb,
         getSavedProbs
-     } = require('./db/crad');
+     } = require('./db/crad'),
+     open = require('open');
 
 const app = express(),
       port = 3000;
@@ -31,9 +32,10 @@ const createMatrixPrabability = (elemensCount, experimentsCount) => {
     return matrix;
 }
 
-const startProj = async () => {
+const start = async () => {
     await establishInitialState();
-    app.listen(port, () => console.log(`server have started on port ${port}`));
+    await app.listen(port, () => console.log(`server have started on port ${port}`));
+    await open('http://localhost:3000');
 }
 
 app.post('/', (req, res) => {
@@ -82,7 +84,7 @@ app.get('/api/results/:id', (req,res) => {
     });
 });
 
-startProj();
+start();
 
 
 
